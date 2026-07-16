@@ -28,6 +28,8 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -70,20 +72,22 @@ public class KongraRainforestMod implements ModInitializer {
         FabricEntityTypeBuilder.create(SpawnGroup.CREATURE, RainforestBeetleEntity::new)
             .dimensions(EntityDimensions.fixed(0.7f, 0.5f)).build());
 
-    public static final ItemGroup KONGRA_GROUP = FabricItemGroup.builder()
-        .icon(() -> new net.minecraft.item.ItemStack(KONGRA_CHESTPLATE))
-        .displayName(Text.translatable("itemGroup.kongrarainforest.main"))
-        .entries((displayContext, entries) -> {
-            entries.add(RAINFOREST_GEM);
-            entries.add(KONGRA_SCALE);
-            entries.add(CANOPY_FRUIT);
-            entries.add(KONGRA_HELMET);
-            entries.add(KONGRA_CHESTPLATE);
-            entries.add(KONGRA_LEGGINGS);
-            entries.add(KONGRA_BOOTS);
-            entries.add(RAINFOREST_GEM_ORE_ITEM);
-        })
-        .build();
+    public static final RegistryKey<ItemGroup> KONGRA_GROUP_KEY = RegistryKey.of(RegistryKeys.ITEM_GROUP, new Identifier(MOD_ID, "main"));
+    public static final ItemGroup KONGRA_GROUP = Registry.register(Registries.ITEM_GROUP, KONGRA_GROUP_KEY,
+        FabricItemGroup.builder()
+            .icon(() -> new net.minecraft.item.ItemStack(KONGRA_CHESTPLATE))
+            .displayName(Text.translatable("itemGroup.kongrarainforest.main"))
+            .entries((displayContext, entries) -> {
+                entries.add(RAINFOREST_GEM);
+                entries.add(KONGRA_SCALE);
+                entries.add(CANOPY_FRUIT);
+                entries.add(KONGRA_HELMET);
+                entries.add(KONGRA_CHESTPLATE);
+                entries.add(KONGRA_LEGGINGS);
+                entries.add(KONGRA_BOOTS);
+                entries.add(RAINFOREST_GEM_ORE_ITEM);
+            })
+            .build());
 
     @Override
     public void onInitialize() {
@@ -117,5 +121,8 @@ public class KongraRainforestMod implements ModInitializer {
 
         // Rain damage system
         RainDamageHandler.register();
+
+        // Kongra Kingdom jungle atmosphere (colors, ambient particles, spawn rate)
+        KongraKingdomAtmosphere.register();
     }
 }
