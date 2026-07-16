@@ -32,6 +32,10 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.world.gen.GenerationStep;
+import net.minecraft.world.gen.feature.DefaultFeatureConfig;
+import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.PlacedFeature;
 
 public class KongraRainforestMod implements ModInitializer {
     public static final String MOD_ID = "kongrarainforest";
@@ -71,6 +75,10 @@ public class KongraRainforestMod implements ModInitializer {
         Registries.ENTITY_TYPE, new Identifier(MOD_ID, "rainforest_beetle"),
         FabricEntityTypeBuilder.create(SpawnGroup.CREATURE, RainforestBeetleEntity::new)
             .dimensions(EntityDimensions.fixed(0.7f, 0.5f)).build());
+
+    // KONGRA's lair — a small overgrown ruin, placed sparsely in jungle biomes.
+    public static final Feature<DefaultFeatureConfig> KONGRA_RUIN = Registry.register(
+        Registries.FEATURE, new Identifier(MOD_ID, "kongra_ruin"), new KongraRuinFeature(DefaultFeatureConfig.CODEC));
 
     public static final RegistryKey<ItemGroup> KONGRA_GROUP_KEY = RegistryKey.of(RegistryKeys.ITEM_GROUP, new Identifier(MOD_ID, "main"));
     public static final ItemGroup KONGRA_GROUP = Registry.register(Registries.ITEM_GROUP, KONGRA_GROUP_KEY,
@@ -124,5 +132,12 @@ public class KongraRainforestMod implements ModInitializer {
 
         // Kongra Kingdom jungle atmosphere (colors, ambient particles, spawn rate)
         KongraKingdomAtmosphere.register();
+
+        // KONGRA's ruin — placed sparsely in jungle biomes. Left unlit inside
+        // on purpose so KONGRA (and other hostiles) naturally spawn there.
+        BiomeModifications.addFeature(BiomeSelectors.tag(ConventionalBiomeTags.JUNGLE),
+            GenerationStep.Feature.SURFACE_STRUCTURES,
+            RegistryKey.of(RegistryKeys.PLACED_FEATURE, new Identifier(MOD_ID, "kongra_ruin")));
     }
 }
+
