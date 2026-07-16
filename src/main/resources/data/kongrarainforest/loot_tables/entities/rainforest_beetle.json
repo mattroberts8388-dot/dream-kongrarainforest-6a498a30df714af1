@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:entity",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "kongrarainforest:canopy_fruit"
+        }
+      ],
+      "conditions": [
+        {"condition": "minecraft:random_chance", "chance": 0.5}
+      ]
+    }
+  ]
+}

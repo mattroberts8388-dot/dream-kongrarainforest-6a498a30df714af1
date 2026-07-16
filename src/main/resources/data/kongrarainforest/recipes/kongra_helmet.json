@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SGS",
+    "S S",
+    "   "
+  ],
+  "key": {
+    "S": {"item": "kongrarainforest:kongra_scale"},
+    "G": {"item": "kongrarainforest:rainforest_gem"}
+  },
+  "result": {"item": "kongrarainforest:kongra_helmet", "count": 1}
+}

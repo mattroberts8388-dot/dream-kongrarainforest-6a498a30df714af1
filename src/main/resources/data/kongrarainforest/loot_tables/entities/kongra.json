@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:entity",
+  "pools": [
+    {
+      "rolls": {"min": 3, "max": 6},
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "kongrarainforest:kongra_scale"
+        }
+      ]
+    },
+    {
+      "rolls": {"min": 1, "max": 2},
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "kongrarainforest:rainforest_gem"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "itemGroup.kongrarainforest.main": "KONGRA Rainforest",
+  "item.kongrarainforest.rainforest_gem": "Rainforest Gem",
+  "item.kongrarainforest.kongra_scale": "KONGRA Scale",
+  "item.kongrarainforest.canopy_fruit": "Canopy Fruit",
+  "item.kongrarainforest.kongra_helmet": "KONGRA Helmet",
+  "item.kongrarainforest.kongra_chestplate": "KONGRA Chestplate",
+  "item.kongrarainforest.kongra_leggings": "KONGRA Leggings",
+  "item.kongrarainforest.kongra_boots": "KONGRA Boots",
+  "block.kongrarainforest.rainforest_gem_ore": "Rainforest Gem Ore",
+  "entity.kongrarainforest.kongra": "KONGRA",
+  "entity.kongrarainforest.jaguar": "Rainforest Jaguar",
+  "entity.kongrarainforest.toucan": "Toucan",
+  "entity.kongrarainforest.rainforest_beetle": "Rainforest Beetle",
+  "tooltip.kongrarainforest.kongra_armor": "Camouflage of the rainforest. Protects against KONGRA and the rain."
+}
