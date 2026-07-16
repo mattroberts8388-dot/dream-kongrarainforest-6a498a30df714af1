@@ -6,8 +6,7 @@
     "S S"
   ],
   "key": {
-    "S": {"item": "kongrarainforest:kongra_scale"},
-    "G": {"item": "kongrarainforest:rainforest_gem"}
+    "S": {"item": "kongrarainforest:kongra_scale"}
   },
   "result": {"item": "kongrarainforest:kongra_boots", "count": 1}
 }
