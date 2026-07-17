@@ -40,9 +40,14 @@ public class KongraArmorMaterial implements ArmorMaterial {
         return Ingredient.ofItems(KongraRainforestMod.KONGRA_SCALE);
     }
 
+    // Vanilla resolves the equipped-armor texture by parsing this string as
+    // a namespaced Identifier ("modid:name") — returning a bare name here
+    // silently falls back to the "minecraft" namespace, which has no such
+    // texture, so the armor renders as the missing-texture checkerboard on
+    // the player model even though the item icon (a separate lookup) is fine.
     @Override
     public String getName() {
-        return "kongra";
+        return KongraRainforestMod.MOD_ID + ":kongra";
     }
 
     @Override
