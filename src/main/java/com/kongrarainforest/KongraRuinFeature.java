@@ -12,13 +12,14 @@ import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.util.FeatureContext;
 
-// A small, overgrown stepped-pyramid ruin -- KONGRA's lair. Placed sparsely
-// in jungle biomes via BiomeModifications.addFeature() in KongraRainforestMod.
-// Built entirely from full-cube blocks (no stairs/slabs) to avoid directional
-// BlockState mistakes, and the interior den is left unlit on purpose so
-// hostile mobs -- including KONGRA -- naturally spawn there under vanilla's
-// light-level spawning rules, instead of needing fragile structure-bound
-// spawn logic.
+// KONGRA's lair -- a large, overgrown stepped-pyramid ruin with a great hall
+// inside big enough for the whole gang (Kongra, jaguar, toucan, beetle) to
+// occupy at once. Placed sparsely in jungle biomes via
+// BiomeModifications.addFeature() in KongraRainforestMod. Built entirely
+// from full-cube blocks (no stairs/slabs) to avoid directional BlockState
+// mistakes, and the hall is left unlit on purpose so hostile mobs --
+// including KONGRA -- naturally spawn there under vanilla's light-level
+// spawning rules, instead of needing fragile structure-bound spawn logic.
 public class KongraRuinFeature extends Feature<DefaultFeatureConfig> {
     public KongraRuinFeature(Codec<DefaultFeatureConfig> codec) {
         super(codec);
@@ -33,62 +34,73 @@ public class KongraRuinFeature extends Feature<DefaultFeatureConfig> {
         BlockPos base = origin.withY(
             world.getTopY(Heightmap.Type.WORLD_SURFACE_WG, origin.getX(), origin.getZ()) - 1);
 
-        // Four solid, shrinking square tiers -- the stepped-pyramid silhouette.
-        int[] radii = {4, 3, 2, 1};
+        // Five solid, shrinking square tiers, each 3 blocks tall -- a much
+        // taller and wider silhouette than a small step pyramid.
+        int[] radii = {9, 7, 5, 3, 1};
+        int tierHeight = 3;
         int y = 0;
         for (int tier = 0; tier < radii.length; tier++) {
             int r = radii[tier];
             Block block = (tier % 2 == 0) ? Blocks.MOSSY_COBBLESTONE : Blocks.CRACKED_STONE_BRICKS;
             for (int dx = -r; dx <= r; dx++) {
                 for (int dz = -r; dz <= r; dz++) {
-                    for (int dy = 0; dy < 2; dy++) {
+                    for (int dy = 0; dy < tierHeight; dy++) {
                         setBlockState(world, base.add(dx, y + dy, dz), block.getDefaultState());
                     }
                 }
             }
-            y += 2;
+            y += tierHeight;
         }
 
-        // Chiseled corner pillars on the base tier.
+        // Chiseled corner pillars on the base tier, full tier height.
         int baseR = radii[0];
         int[][] corners = {{-baseR, -baseR}, {-baseR, baseR}, {baseR, -baseR}, {baseR, baseR}};
         for (int[] c : corners) {
-            for (int dy = 0; dy < 2; dy++) {
+            for (int dy = 0; dy < tierHeight; dy++) {
                 setBlockState(world, base.add(c[0], dy, c[1]), Blocks.CHISELED_STONE_BRICKS.getDefaultState());
             }
         }
 
-        // KONGRA's den -- a small hollow chamber carved into the base tier.
-        // Deliberately unlit.
-        for (int dx = -1; dx <= 1; dx++) {
-            for (int dz = -1; dz <= 1; dz++) {
-                for (int dy = 0; dy <= 1; dy++) {
+        // KONGRA's great hall -- a real room, not a closet. 9x9 floor, 5
+        // blocks of headroom, big enough for the whole gang to be inside
+        // at once. Deliberately unlit.
+        int hallR = 4;
+        for (int dx = -hallR; dx <= hallR; dx++) {
+            for (int dz = -hallR; dz <= hallR; dz++) {
+                for (int dy = 0; dy <= 4; dy++) {
                     setBlockState(world, base.add(dx, dy, dz), Blocks.CAVE_AIR.getDefaultState());
                 }
             }
         }
-        // Entrance passage on the south face.
-        for (int dz = 2; dz <= baseR; dz++) {
-            for (int dy = 0; dy <= 1; dy++) {
-                setBlockState(world, base.add(0, dy, dz), Blocks.CAVE_AIR.getDefaultState());
-            }
-        }
-        // Chamber floor, so it reads as a built room rather than a hole.
-        for (int dx = -1; dx <= 1; dx++) {
-            for (int dz = -1; dz <= 1; dz++) {
+        // Hall floor, so it reads as a built room rather than a hole.
+        for (int dx = -hallR; dx <= hallR; dx++) {
+            for (int dz = -hallR; dz <= hallR; dz++) {
                 setBlockState(world, base.add(dx, -1, dz), Blocks.CRACKED_STONE_BRICKS.getDefaultState());
             }
         }
+        // Wide, tall entrance passage on the south face -- easily fits
+        // KONGRA (1.4 wide, 2.6 tall) alongside a companion.
+        for (int dz = hallR + 1; dz <= baseR; dz++) {
+            for (int dx = -1; dx <= 1; dx++) {
+                for (int dy = 0; dy <= 3; dy++) {
+                    setBlockState(world, base.add(dx, dy, dz), Blocks.CAVE_AIR.getDefaultState());
+                }
+            }
+        }
 
-        // A handful of vines on the west/east faces of each tier for the overgrown look.
+        // Vines on the tiers' east/west faces for the overgrown look --
+        // scaled up to the bigger structure.
         for (int tier = 0; tier < radii.length; tier++) {
             int r = radii[tier];
-            int vy = tier * 2 + 1;
-            if (random.nextFloat() < 0.8f) {
-                setBlockState(world, base.add(-r - 1, vy, 0), Blocks.VINE.getDefaultState().with(VineBlock.EAST, true));
-            }
-            if (random.nextFloat() < 0.8f) {
-                setBlockState(world, base.add(r + 1, vy, 2), Blocks.VINE.getDefaultState().with(VineBlock.WEST, true));
+            for (int i = 0; i < 3; i++) {
+                int vy = tier * tierHeight + 1 + random.nextInt(Math.max(1, tierHeight - 1));
+                int vz = -r + 2 + random.nextInt(Math.max(1, 2 * r - 4));
+                if (random.nextFloat() < 0.8f) {
+                    setBlockState(world, base.add(-r - 1, vy, vz), Blocks.VINE.getDefaultState().with(VineBlock.EAST, true));
+                }
+                if (random.nextFloat() < 0.8f) {
+                    setBlockState(world, base.add(r + 1, vy, vz), Blocks.VINE.getDefaultState().with(VineBlock.WEST, true));
+                }
             }
         }
 
