@@ -88,6 +88,11 @@ public class KongraRuinFeature extends Feature<DefaultFeatureConfig> {
             }
         }
 
+        // A cavern beneath the great hall, reached by a shaft down from the
+        // hall floor -- gives the lair real depth instead of ending at one
+        // room, without needing to know where any other ruin generated.
+        carveCavern(world, random, base);
+
         // Vines on the tiers' east/west faces for the overgrown look --
         // scaled up to the bigger structure.
         for (int tier = 0; tier < radii.length; tier++) {
@@ -105,5 +110,46 @@ public class KongraRuinFeature extends Feature<DefaultFeatureConfig> {
         }
 
         return true;
+    }
+
+    // Vertical shaft down from the hall floor into a cluster of overlapping
+    // carved spheres along a gently wandering path -- a real cave chamber
+    // rather than another box room -- with a built floor at the bottom so
+    // it reads as KONGRA's den.
+    private void carveCavern(StructureWorldAccess world, Random random, BlockPos base) {
+        int shaftDepth = 12 + random.nextInt(6);
+        for (int dy = 1; dy <= shaftDepth; dy++) {
+            for (int dx = -1; dx <= 1; dx++) {
+                for (int dz = -1; dz <= 1; dz++) {
+                    setBlockState(world, base.add(dx, -1 - dy, dz), Blocks.CAVE_AIR.getDefaultState());
+                }
+            }
+        }
+
+        BlockPos.Mutable center = base.mutableCopy().move(0, -1 - shaftDepth, 0);
+        int blobs = 5 + random.nextInt(3);
+        for (int i = 0; i < blobs; i++) {
+            int r = 4 + random.nextInt(4);
+            carveSphere(world, center, r);
+            center.move(random.nextInt(7) - 3, -(1 + random.nextInt(3)), random.nextInt(7) - 3);
+        }
+
+        for (int dx = -3; dx <= 3; dx++) {
+            for (int dz = -3; dz <= 3; dz++) {
+                setBlockState(world, center.add(dx, -1, dz), Blocks.MOSSY_COBBLESTONE.getDefaultState());
+            }
+        }
+    }
+
+    private void carveSphere(StructureWorldAccess world, BlockPos center, int r) {
+        for (int dx = -r; dx <= r; dx++) {
+            for (int dy = -r; dy <= r; dy++) {
+                for (int dz = -r; dz <= r; dz++) {
+                    if (dx * dx + dy * dy + dz * dz <= r * r) {
+                        setBlockState(world, center.add(dx, dy, dz), Blocks.CAVE_AIR.getDefaultState());
+                    }
+                }
+            }
+        }
     }
 }
