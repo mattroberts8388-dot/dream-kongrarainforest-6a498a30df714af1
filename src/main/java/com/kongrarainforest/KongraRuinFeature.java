@@ -118,7 +118,10 @@ public class KongraRuinFeature extends Feature<DefaultFeatureConfig> {
     // it reads as KONGRA's den.
     private void carveCavern(StructureWorldAccess world, Random random, BlockPos base) {
         int shaftDepth = 12 + random.nextInt(6);
-        for (int dy = 1; dy <= shaftDepth; dy++) {
+        // dy starts at 0 (not 1) so the shaft's top layer lands exactly on
+        // the hall floor's y-level and punches an opening through it --
+        // starting one below left the floor solid over a sealed shaft.
+        for (int dy = 0; dy <= shaftDepth; dy++) {
             for (int dx = -1; dx <= 1; dx++) {
                 for (int dz = -1; dz <= 1; dz++) {
                     setBlockState(world, base.add(dx, -1 - dy, dz), Blocks.CAVE_AIR.getDefaultState());
